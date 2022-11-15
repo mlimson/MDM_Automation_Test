@@ -14,7 +14,7 @@ const PasswordField = 'input[id="login_password"]';
 const LoginBtn = 'button[id="btn_login"]';
 
 //Company
-const company = '199556';
+const company = '213341';
 
 //Login credentials
 const purchaser = '315039158';
@@ -37,7 +37,7 @@ afterAll(async () => {
     await browser.close();
 }, 100000);
 
-describe.skip('Validation for purcahsing staff can create request for new supplier registration', () => {
+describe('Validation for purcahsing staff can create request for new supplier registration', () => {
     //start of TC_SPLR_024
     it('TC_SPLR_024 Should allow creating request for new supplier registration', async () => {
         page = await browser.newPage();
@@ -407,7 +407,7 @@ describe.skip('Validation for purcahsing staff can create request for new suppli
     }, 100000);//end of TC_SPLR_027
 }, 500000),
 
-describe.skip('Validation for purchasing staff can update request created for suplier registration', () => {
+describe('Validation for purchasing staff can update request created for suplier registration', () => {
     //start of TC_SPLR_028
     it('TC_SPLR_028 Should update supplier request', async () => {
         page = await browser.newPage();
@@ -529,7 +529,7 @@ describe.skip('Validation for purchasing staff can update request created for su
     }, 100000);//end of TC_SPLR_030
 }, 500000),
 
-describe.skip('Validation for purchasing head can approve request for supplier registration', () => {
+describe('Validation for purchasing head can approve request for supplier registration', () => {
     //start of TC_SPLR_037
     it('TC_SPLR_037 Should approve new supplier request', async () => {
         page = await browser.newPage();
