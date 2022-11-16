@@ -17,9 +17,9 @@ const LoginBtn = 'button[id="btn_login"]';
 const company = '213341';
 
 //Login credentials
-const purchaser = '315039158';
-const purchasingHead = '315008002';
-const functional = '315038973';
+const purchaser = '315045251';
+const purchasingHead = '154152412';
+const functional = '154129217';
 const password = '1234';
 
 //Test Data
