@@ -1,11 +1,12 @@
 const puppeteer = require ('puppeteer');
 const chalk = require('chalk');
+const config = require('./config')
 
 let browser;
 let page;
 
 
-const pageURL = 'https://mdm-eut.biotechfarms.net/';
+const pageURL = config.pageURL;
 
 //for Login
 const IdField = 'input[id="emp_id"]';
@@ -20,7 +21,7 @@ const validPassword = 'admin';
 const newUser = '154150631';
 
 beforeAll(async () => {
-    browser = await puppeteer.launch({devtools: true, headless: false, defaultViewport: null, args: ['--start-maximized', '--kiosk-printing']});
+    browser = await puppeteer.launch({devtools: false, headless: true, defaultViewport: null, args: ['--start-maximized', '--kiosk-printing']});
 }, 100000);
 
 beforeEach(async () => {
@@ -29,11 +30,7 @@ beforeEach(async () => {
     await page.setDefaultNavigationTimeout(0);
 
     await page.goto(pageURL, {waitUntil: 'networkidle0'});
-    await page.setViewport({
-        width: 1920,
-        height: 1080
-    });
-
+    await page.setViewport({width: 1920, height: 1080});
     await page.on('load');
     await page.on('domcontentloaded');
 

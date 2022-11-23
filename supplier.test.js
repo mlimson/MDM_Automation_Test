@@ -1,12 +1,13 @@
 const puppeteer = require ('puppeteer');
 const chalk = require('chalk');
 const moment = require('moment');
+const config = require('./config')
 
 let browser;
 let page;
 
 
-const pageURL = 'https://mdm-eut.biotechfarms.net/';
+const pageURL = config.pageURL;
 
 //for Login
 const IdField = 'input[id="emp_id"]';
@@ -14,12 +15,12 @@ const PasswordField = 'input[id="login_password"]';
 const LoginBtn = 'button[id="btn_login"]';
 
 //Company
-const company = '213341';
+const company = config.company;
 
 //Login credentials
-const purchaser = '315045251';
-const purchasingHead = '154152412';
-const functional = '154129217';
+const purchaser = config.purchaser;
+const purchasingHead = config.purchasingHead;
+const functional = config.functional;
 const password = '1234';
 
 //Test Data
