@@ -19,7 +19,7 @@ const company = '199556';
 //Login credentials
 const custodian = '154152095';
 const purchCode = '63'; //for approver/verifier
-const purchasing = '315039158';
+const purchaser = '315039158';
 const astsg = '315017139';
 const gl = '154150609';
 const password = '1234';
@@ -251,7 +251,7 @@ describe('Validation for purchaser can verify service item registration request'
         console.log(chalk.green('TC_ITM_038 Should allow Purcahser to verify service item registration request'));
         await page.waitForTimeout(2000);
 
-        await page.type(IdField , purchasing, {delay: 50}); //input valid username
+        await page.type(IdField , purchaser, {delay: 50}); //input valid username
         await page.waitForTimeout(2000);
         await page.type(PasswordField, password, {delay: 50}); //input valid password
         await page.click(LoginBtn); //click login button
