@@ -21,7 +21,21 @@ const validPassword = 'admin';
 const newUser = '154150631';
 
 beforeAll(async () => {
-    browser = await puppeteer.launch({devtools: false, headless: true, defaultViewport: null, args: ['--start-maximized', '--kiosk-printing', '--proxy-server=http://192.168.36.35:3128' ]});
+    browser = await puppeteer.launch(
+        {
+            devtools: false, 
+            headless: true, 
+            defaultViewport: null, 
+            args: [
+                '--start-maximized', '--kiosk-printing', 
+                '--proxy-server=http://192.168.36.35:3128', 
+                '--disable-gpu',
+                '--disable-dev-shm-usage',
+                '--disable-setuid-sandbox',
+                '--no-sandbox'
+            ]
+        }
+    );
 }, 100000);
 
 beforeEach(async () => {
@@ -48,9 +62,7 @@ describe('Log-in Module', () => {
     //start of TC_LG_001
     it('TC_LG_001 Should not allow invalid username and invalid password', async () => {
         console.log(chalk.green('TC_LG_001 Should not allow invalid username and invalid password'));
-        await page.waitForTimeout(2500);
         await page.type(IdField , invalidId, {delay: 50}); //input invalid username
-        await page.waitForTimeout(2000);
         await page.type(PasswordField, invalidPassword, {delay: 50}); //input invalid password
         await page.click(LoginBtn); //click login button
 
@@ -58,15 +70,12 @@ describe('Log-in Module', () => {
         await page.$$('div > .card > .card-body > div > .alert');
         const alert = await page.$eval('div > .card > .card-body > div > .alert', elem => elem.innerText); //error message
         expect(alert).toMatch('User does not exist'); //validate expected result
-        await page.waitForTimeout(2500);
     }, 100000);//end of TC_LG_001
 
     //start of TC_LG_002
     it('TC_LG_002 Should not allow valid username and invalid password', async () => {
         console.log(chalk.green('TC_LG_002 Should not allow valid username and invalid password'));
-        await page.waitForTimeout(2500);
         await page.type(IdField , validId, {delay: 50}); //input valid username
-        await page.waitForTimeout(2000);
         await page.type(PasswordField, invalidPassword, {delay: 50}); //input invalid password
         await page.click(LoginBtn); //click login button
 
@@ -74,15 +83,12 @@ describe('Log-in Module', () => {
         await page.$$('div > .card > .card-body > div > .alert');
         const alert = await page.$eval('div > .card > .card-body > div > .alert', elem => elem.innerText); //error message
         expect(alert).toMatch('Incorrect password.'); //validate expected result
-        await page.waitForTimeout(2500);
     }, 100000);//end of TC_LG_002
 
     //start of TC_LG_003
     it('TC_LG_003 Should not allow invalid username and valid password', async () => {
         console.log(chalk.green('TC_LG_003 Should not allow invalid username and valid password'));
-        await page.waitForTimeout(2500);
         await page.type(IdField , invalidId, {delay: 50}); //input invalid username
-        await page.waitForTimeout(2000);
         await page.type(PasswordField, validPassword, {delay: 50}); //input valid password
         await page.click(LoginBtn); //click login button
 
@@ -90,62 +96,48 @@ describe('Log-in Module', () => {
         await page.$$('div > .card > .card-body > div > .alert');
         const alert = await page.$eval('div > .card > .card-body > div > .alert', elem => elem.innerText); //error message
         expect(alert).toMatch('User does not exist.'); //validate expected result
-        await page.waitForTimeout(2500);
     }, 100000);//end of TC_LG_003
 
     //start of TC_LG_004
     it('TC_LG_004 Should not allow null username', async () => {
         console.log(chalk.green('TC_LG_004 Should not allow null username'));
-        await page.waitForTimeout(2500);
         await page.type(PasswordField, validPassword, {delay: 50}); //input valid password
 
-        await page.waitForTimeout(2000);
         const btnDisabled = await page.$('button[disabled]') !== null;
         expect(btnDisabled).toBeTruthy();//validate expected result
         
-        await page.waitForTimeout(2500);
     }, 100000);//end of TC_LG_004
 
     //start of TC_LG_005
     it('TC_LG_005 Should not allow null password', async () => {
         console.log(chalk.green('TC_LG_005 Should not allow null password'));
-        await page.waitForTimeout(2500);
         await page.type(IdField , invalidId, {delay: 50}); //input invalid username
-        await page.waitForTimeout(2000);
 
-        await page.waitForTimeout(2000);
         const btnDisabled = await page.$('button[disabled]') !== null;
         expect(btnDisabled).toBeTruthy();//validate expected result        
 
-        await page.waitForTimeout(2500);
     }, 100000);//end of TC_LG_005
 
     //start of TC_LG_006
     it('TC_LG_006 Should not allow null username and null password', async () => {
         console.log(chalk.green('TC_LG_006 Should not allow null username and null password'));
-        await page.waitForTimeout(2000);
 
         const btnDisabled = await page.$('button[disabled]') !== null;
         expect(btnDisabled).toBeTruthy();//validate expected result        
 
-        await page.waitForTimeout(2500);
     }, 100000);//end of TC_LG_006
 
 
     //start of TC_LG_007
     it('TC_LG_007 Should allow valid username and valid password', async () => {
         console.log(chalk.green('TC_LG_007 Should allow valid username and valid password'));
-        await page.waitForTimeout(2500);
         await page.type(IdField , validId, {delay: 50}); //input valid username
-        await page.waitForTimeout(2000);
         await page.type(PasswordField, validPassword, {delay: 50}); //input valid password
         await page.click(LoginBtn); //click login button
 
-        await page.waitForTimeout(2500);
         const mainPage = await page.$('#__layout > #wrapper > .content > .nuxt-table > .mainPages');
         expect(mainPage).toBeDefined();
 
-        await page.waitForTimeout(2500);
     }, 100000);//end of TC_LG_007
 
 }, 500000)
