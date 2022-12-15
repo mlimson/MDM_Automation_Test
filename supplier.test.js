@@ -25,11 +25,11 @@ const password = '1234';
 
 //Test Data
 const SuppName = 'Automated Testing - Supplier ' + moment().format('MMM DD, h:mm:ss a'); //prevent duplicates of Supplier Name
-const requestedSupplier = 'AUTOMATED TESTING - SUPPLIER SEP 28, 3:00:00 PM';
-const approvedSupplier = 'AUTOMATED TESTING - SUPPLIER SEP 27, 3:29:41 PM';
+const requestedSupplier = SuppName;
+const approvedSupplier = SuppName;
 
 beforeAll(async () => {
-    browser = await puppeteer.launch({devtools: false, headless: false, defaultViewport: null, args: ['--start-maximized', '--kiosk-printing']});
+    browser = await puppeteer.launch({devtools: false, headless: true, defaultViewport: null, args: ['--start-maximized', '--kiosk-printing', '--proxy-server=http://192.168.36.35:3128']});
     const title = 'Master Data Management System';
     console.log(chalk.yellow('Title Value: ' + title));
 }, 100000);

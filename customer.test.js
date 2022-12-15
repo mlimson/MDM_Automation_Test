@@ -24,12 +24,12 @@ const functional = config.functional;
 const password = '1234';
 
 //Test Data
-const CustName = 'Automated Testing - Customer ' + moment().format('MMM DD, h:mm:ss a'); //prevent duplicates of customer Name
+const CustName = 'Customer ' + moment().format('MMM DD, h:mm:ss a'); //prevent duplicates of customer Name
 const requestedCustomer = 'AUTOMATED TESTING - CUSTOMER SEP 29, 1:35:08 PM';
 const approvedCustomer = 'AUTOMATED TESTING - CUSTOMER SEP 29, 1:35:08 PM';
 
 beforeAll(async () => {
-    browser = await puppeteer.launch({devtools: false, headless: false, defaultViewport: null, args: ['--start-maximized', '--kiosk-printing']});
+    browser = await puppeteer.launch({devtools: false, headless: true, defaultViewport: null, args: ['--start-maximized', '--kiosk-printing', '--proxy-server=http://192.168.36.35:3128']});
     const title = 'Master Data Management System';
     console.log(chalk.yellow('Title Value: ' + title));
 }, 100000);
@@ -106,7 +106,7 @@ describe('Validation for sales staff can create request for customer registraton
         await page.waitForTimeout(2000);
         await page.waitForSelector('#supp_name_add');
         await page.type('#supp_name_add',CustName, {delay: 50})
-        console.log(chalk.yellow(CustName));
+        console.log(chalk.yellow("Customer Name: " + CustName));
         
         //Select Group
         await page.waitForTimeout(2000);
@@ -157,11 +157,11 @@ describe('Validation for sales staff can create request for customer registraton
         await page.click('#payment_terms_supp_add');
         
         //Select Price List        
-        await page.waitForSelector('#price_list_supp_add');
-        await page.click('#price_list_supp_add');
-        await page.waitForTimeout(2000);
-        await page.select('#price_list_supp_add', 'PL104');
-        await page.click('#price_list_supp_add');
+        // await page.waitForSelector('#price_list_supp_add');
+        // await page.click('#price_list_supp_add');
+        // await page.waitForTimeout(2000);
+        // await page.select('#price_list_supp_add', 'PL104');
+        // await page.click('#price_list_supp_add');
         
         //Input Credit Limit
         await page.waitForTimeout(2000);
@@ -329,7 +329,7 @@ describe('Validation for sales staff can create request for customer registraton
     }, 100000);//end of TC_CSTMR_026
 
     //start of TC_CSTMR_027
-    it('TC_CSTMR_027 Should submit request', async () => {
+    it('TC_CSTMR_027 Should submit customer registration request', async () => {
         console.log(chalk.green('TC_CSTMR_027 Should submit request'));
 
         //Click Submit button
@@ -351,6 +351,7 @@ describe('Validation for sales staff can create request for customer registraton
         
         //search request
         await page.waitForSelector('#request_customer_search');
+        await page.waitForTimeout(2000);
         const searchBar = await page.$$('#request_customer_search');
         await searchBar[0].type(CustName, {delay:50});
         await page.waitForTimeout(2000);
@@ -363,7 +364,7 @@ describe('Validation for sales staff can create request for customer registraton
 }, 500000),
 
 describe('Validation for sales staff can update request created for customer registration', () => {
-    it('Should update customer request', async () => {
+    it('TC_CSTMR_028 Should update customer request', async () => {
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
@@ -446,8 +447,8 @@ describe('Validation for sales staff can update request created for customer reg
 }, 500000),
 
 describe('Validation for Sales Head can approve customer registration request', () => {
-    //start of TC_CSTMR_033
-    it('TC_CSTMR_033 Should approve new customer request', async () => {
+    //start of TC_CSTMR_035
+    it('TC_CSTMR_035 Should approve new customer request', async () => {
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
@@ -481,10 +482,10 @@ describe('Validation for Sales Head can approve customer registration request', 
         await page.click('#customer_request___BV_tab_button__');
 
         //search request
-        await page.waitForTimeout(2000);
+        await page.waitForTimeout(2500);
         await page.waitForSelector('#request_customer_search');
         const searchBar = await page.$$('#request_customer_search');
-        await searchBar[0].type(requestedCustomer, {delay:50});
+        await searchBar[0].type(CustName, {delay:50});
 
         //Click Approve Request button
         await page.waitForSelector('#btn_approve_customer_request');
@@ -507,20 +508,20 @@ describe('Validation for Sales Head can approve customer registration request', 
         
         //search request
         await page.waitForTimeout(2000);
-        await searchBar[1].type(requestedCustomer, {delay:50});
+        await searchBar[1].type(CustName, {delay:50});
         await page.waitForTimeout(2000);
         await page.waitForSelector('tbody > tr > td > .badge-font-size > .badge-third-level');
         const status = await page.$eval('tbody > tr > td > .badge-font-size > .badge-third-level', elem => elem.innerText);
         expect(status).toMatch('Approved');
         
         await page.waitForTimeout(2500);
-    }, 100000);//end of TC_CSTMR_033
+    }, 100000);//end of TC_CSTMR_035
 
 }, 500000),
 
 describe('Validation for functional financials can process customer registration request', () => {
-    //start of TC_CSTMR_035
-    it('TC_CSTMR_035 Should process new customer registration request', async () => {
+    //start of TC_CSTMR_037
+    it('TC_CSTMR_037 Should process new customer registration request', async () => {
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
@@ -556,7 +557,7 @@ describe('Validation for functional financials can process customer registration
         //search request
         await page.waitForTimeout(2000);
         const searchBar = await page.$$('#request_customer_search');
-        await searchBar[1].type(approvedCustomer, {delay:50});
+        await searchBar[1].type(CustName, {delay:50});
 
         //Click Process Request button
         await page.waitForTimeout(2000);
@@ -618,13 +619,13 @@ describe('Validation for functional financials can process customer registration
         
         //search request
         await page.waitForTimeout(2000);
-        await searchBar[3].type(approvedCustomer, {delay:50});
+        await searchBar[3].type(CustName, {delay:50});
         await page.waitForTimeout(2000);
         await page.waitForSelector('tbody > tr > td > .badge-font-size > .badge-fourth-level');
         const status = await page.$eval('tbody > tr > td > .badge-font-size > .badge-fourth-level', elem => elem.innerText);
         expect(status).toMatch('Processed');
         
         await page.waitForTimeout(2500);        
-    }, 100000);//end of TC_CSTMR_035
+    }, 100000);//end of TC_CSTMR_037
 
 }, 500000)
