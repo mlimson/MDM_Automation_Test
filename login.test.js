@@ -21,7 +21,7 @@ const validPassword = 'admin';
 const newUser = '154150631';
 
 beforeAll(async () => {
-    browser = await puppeteer.launch({devtools: false, headless: true, defaultViewport: null, args: ['--start-maximized', '--kiosk-printing']});
+    browser = await puppeteer.launch({devtools: false, headless: true, defaultViewport: null, args: ['--start-maximized', '--kiosk-printing', '--proxy-server=http://192.168.36.35:3128' ]});
 }, 100000);
 
 beforeEach(async () => {
