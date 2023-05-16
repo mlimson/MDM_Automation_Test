@@ -15,7 +15,8 @@ const config = {
     managedBy: process.env.managedBy,
     issueMethod: process.env.issueMethod,
     assetClass: process.env.assetClass,
-    assetSubClass: process.env.assetSubClass
+    assetSubClass: process.env.assetSubClass,
+    PAitem: process.env.PAitem
 }
 
 module.exports = config
