@@ -120,3 +120,43 @@ describe('Validation for creating request for price approval', () => {
         await page.waitForTimeout(1500);
     }, 100000);
 }, 500000);
+
+describe('Validation for approving Price Approval request', () => {
+    it('Should approve request for Price Approval', async() => {
+        page = await browser.newPage();
+        await page.setDefaultNavigationTimeout(0);
+        await page.goto(pageURL, {waitUntil: 'networkidle0'});
+    
+        await page.type(IdField , purchasingHead); //input valid username
+        await page.type(PasswordField, password); //input valid password
+        await page.click(LoginBtn); //click login button
+
+        await page.waitForSelector('main > .body_loading > #loader > .loader3 > .logoz', {hidden: true});
+
+        //Click Price Approval dropdown menu
+        await page.waitForSelector('#sidebar > .sidebar-header > .list-unstyled > li:nth-child(3) > .mb-2');
+        await page.click('#sidebar > .sidebar-header > .list-unstyled > li:nth-child(3) > .mb-2');
+        await page.waitForTimeout(2000); 
+        
+        //Select List For Approval
+        await page.waitForSelector('li > #collapsePrice > .ml-3 > #sb_listForApproval');
+        await page.click('li > #collapsePrice > .ml-3 > #sb_listForApproval');
+        await page.waitForTimeout(1500);
+
+        //Navigate to Approve Tab
+        await page.waitForSelector('#tab-approval-list___BV_tab_button__');
+        await page.click('#tab-approval-list___BV_tab_button__');
+        await page.waitForTimeout(1500);
+        
+        //Click Approve button
+        await page.waitForSelector('tr > td > #btn_approve_req');
+        await page.click('tr > td > #btn_approve_req');
+        
+        await page.waitForSelector('.card-text > .container-fluid > #loader > .loader3 > .logoz', {hidden:true});
+        
+        //Expected Result
+        const alert = await page.$eval('#tab-approval-list > .card-text > .container-fluid > div > .alert', elem => elem.innerText);
+        expect(alert).toMatch("Request approved");
+        await page.waitForTimeout(1500);
+    },100000);
+}, 500000);
