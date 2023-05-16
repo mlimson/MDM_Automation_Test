@@ -9,7 +9,13 @@ const config = {
     salesHead: process.env.salesHead,
     custodian: process.env.custodian,
     astsg: process.env.astsg,
-    gl: process.env.gl
+    gl: process.env.gl,
+    purchCode: process.env.purchCode,
+    categoryName: process.env.categoryName,
+    managedBy: process.env.managedBy,
+    issueMethod: process.env.issueMethod,
+    assetClass: process.env.assetClass,
+    assetSubClass: process.env.assetSubClass
 }
 
 module.exports = config
