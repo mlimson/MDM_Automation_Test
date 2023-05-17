@@ -16,7 +16,13 @@ const config = {
     issueMethod: process.env.issueMethod,
     assetClass: process.env.assetClass,
     assetSubClass: process.env.assetSubClass,
-    PAitem: process.env.PAitem
+    PAitem: process.env.PAitem,
+    PAitemPrice: process.env.PAitemPrice,
+    PAbp: process.env.PAbp,
+    PAbpPrice: process.env.PAbpPrice,
+    PAlocation: process.env.PAlocation,
+    PAlocationPrice: process.env.PAlocationPrice,
+    PArequestID: process.env.PArequestID
 }
 
 module.exports = config
