@@ -4,7 +4,7 @@ const config = {
           "default",
           ["jest-html-reporters", {
             "publicPath": "./test-results",
-            "filename": "mdm-price-approval.html",
+            "filename": "mdm-pa-test.html",
             "openReport": true
           }]
         ]

@@ -127,16 +127,17 @@ describe('Validation for purcahsing staff can create request for new supplier re
         await telPhone[1].type('1238787780');
         
         //Input Mobile Number
-        await page.type('#mobile_no_supp_add', '2124567890');
+        const field = await page.$$('#mobile_no_supp_add');
+        await field[0].type('2124567890');
 
         //Input Fax
-        await page.type('#fax_no_supp_add', '215415813223');
+        await field[1].type('215415813223');
         
         //Input E-mail
-        await page.type('#email_supp_add', 'vendor_email@email.com');
+        await field[2].type('vendor_email@email.com');
         
         //Input Website
-        await page.type('#website_supp_add', 'vendor-site.nat');
+        await field[3].type('#website_supp_add', 'vendor-site.nat');
         
         //Select Region
         await page.select('#region_supp_add', 'REGION XII');
