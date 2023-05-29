@@ -10,6 +10,7 @@ const config = {
     custodian: process.env.custodian,
     astsg: process.env.astsg,
     gl: process.env.gl,
+    BPGroup: process.env.BPGroup,
     purchCode: process.env.purchCode,
     categoryName: process.env.categoryName,
     managedBy: process.env.managedBy,
