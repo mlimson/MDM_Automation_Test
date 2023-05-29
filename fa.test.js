@@ -28,7 +28,7 @@ const assetSubClass=config.assetSubClass;
 const password = '1234';
 
 //Test Data
-const FaName = ('FA ' + + uniqueNamesGenerator({dictionaries: [adjectives, languages], style: 'capital', separator: ' '})).toUpperCase(); //prevent duplicates of item Name
+const FaName = ('FA ' + uniqueNamesGenerator({dictionaries: [adjectives, languages], style: 'capital', separator: ' '})).toUpperCase(); //prevent duplicates of item Name
 const requestedFA = FaName;
 const verifiedFA = FaName;
 const classifiedFA = FaName;
@@ -37,7 +37,7 @@ beforeAll(async () => {
     browser = await puppeteer.launch(
         {
             devtools: false, 
-            headless: true, 
+            headless: false, 
             defaultViewport: null, 
             args: [
                 '--start-maximized', '--kiosk-printing', 
@@ -205,6 +205,7 @@ describe('Validation for purchaser can verify fixed asset registration request',
         await page.click(LoginBtn); //click login button
 
         //Navigate to Items Menu
+        await page.waitForTimeout(2000);
         await page.waitForSelector('#sb_items');
         await page.click('#sb_items');
         
@@ -244,7 +245,6 @@ describe('Validation for gl accounting can classify fixed asset registration req
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
 
         await page.type(IdField , gl); //input valid username
-        await page.waitForTimeout(2000);
         await page.type(PasswordField, password); //input valid password
         await page.click(LoginBtn); //click login button
 
@@ -257,6 +257,7 @@ describe('Validation for gl accounting can classify fixed asset registration req
         await page.click('#item_verify___BV_tab_button__');
 
         //search request
+        await page.waitForTimeout(2000);
         await page.waitForSelector('#request_item_search');
         const searchBar = await page.$$('#request_item_search');
         await searchBar[1].type(verifiedFA);
@@ -322,6 +323,7 @@ describe('Validation for ASTSG can process fixed asset registration request', ()
         await page.click('#item_verify___BV_tab_button__');
 
         //search request
+        await page.waitForTimeout(2000);
         await page.waitForSelector('#request_item_search');
         const searchBar = await page.$$('#request_item_search');
         await searchBar[1].type(classifiedFA);
