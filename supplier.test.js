@@ -1,6 +1,7 @@
 const puppeteer = require ('puppeteer');
 const chalk = require('chalk');
 const moment = require('moment');
+const { uniqueNamesGenerator, adjectives,languages } = require('unique-names-generator');
 const config = require('./config')
 
 let browser;
@@ -24,7 +25,7 @@ const functional = config.functional;
 const password = '1234';
 
 //Test Data
-const SuppName = 'SUPPLIER ' + moment().format('MMM DD, h:mm:ss a'); //prevent duplicates of Supplier Name
+const SuppName = uniqueNamesGenerator({dictionaries: [adjectives, languages, names], style: 'capital', separator: ' '}).toUpperCase(); //prevent duplicates of Supplier Name
 const requestedSupplier = SuppName;
 const approvedSupplier = SuppName;
 

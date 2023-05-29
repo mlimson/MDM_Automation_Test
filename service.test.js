@@ -1,6 +1,7 @@
 const puppeteer = require ('puppeteer');
 const chalk = require('chalk');
 const moment = require('moment');
+const { uniqueNamesGenerator, adjectives,languages } = require('unique-names-generator');
 const config = require('./config')
 
 let browser;
@@ -25,7 +26,7 @@ const gl = config.gl;
 const password = '1234';
 
 //Test Data
-const SrvName = ('SERVICE ' + moment().format('MMM DD, h:mm:ss a')).toUpperCase(); //prevent duplicates of item Name
+const SrvName = ('SERVICE ' + + uniqueNamesGenerator({dictionaries: [adjectives, languages], style: 'capital', separator: ' '})).toUpperCase(); //prevent duplicates of item Name
 const requestedSrv = SrvName;
 const verifiedSrv = SrvName;
 const classifiedSrv = SrvName;

@@ -1,6 +1,7 @@
 const puppeteer = require ('puppeteer');
 const chalk = require('chalk');
 const moment = require('moment');
+const { uniqueNamesGenerator, adjectives,languages, names } = require('unique-names-generator');
 const config = require('./config')
 
 let browser;
@@ -21,10 +22,11 @@ const company = config.company;
 const salesStaff = config.salesStaff;
 const salesHead = config.salesHead;
 const functional = config.functional;
+const BPGroup = config.BPGroup
 const password = '1234';
 
 //Test Data
-const CustName = 'CUSTOMER ' + moment().format('MMM DD, h:mm:ss a'); //prevent duplicates of customer Name
+const CustName = uniqueNamesGenerator({dictionaries: [adjectives, languages, names], style: 'capital', separator: ' '}).toUpperCase(); //prevent duplicates of customer Name
 const requestedCustomer = 'AUTOMATED TESTING - CUSTOMER SEP 29, 1:35:08 PM';
 const approvedCustomer = 'AUTOMATED TESTING - CUSTOMER SEP 29, 1:35:08 PM';
 
@@ -32,7 +34,7 @@ beforeAll(async () => {
     browser = await puppeteer.launch(
         {
             devtools: false, 
-            headless: true, 
+            headless: false, 
             defaultViewport: null, 
             args: [
                 '--start-maximized', '--kiosk-printing', 
@@ -83,10 +85,12 @@ describe('Validation for sales staff can create request for customer registraton
         await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden:true});
         
         //Select Business Partner Type
+        await page.waitForTimeout(1500);
         await page.waitForSelector('#bp_type_supp_add');
         await page.select('#bp_type_supp_add', 'C');
         
         //Select Request Type
+        await page.waitForTimeout(1500);
         await page.waitForSelector('#request_type_supp_add');
         await page.select('#request_type_supp_add', 'N');
         
@@ -97,7 +101,7 @@ describe('Validation for sales staff can create request for customer registraton
         
         //Select Group
         await page.waitForSelector('#group_cust_add');
-        await page.select('#group_cust_add', 'BG103');
+        await page.select('#group_cust_add', BPGroup);
         
         //Input TIN
         await page.waitForSelector('#tin_cust_add');
@@ -149,6 +153,7 @@ describe('Validation for sales staff can create request for customer registraton
 
     //start of TC_CSTMR_025
     it('TC_CSTMR_025 Should allow adding Address details', async() => {
+        await page.waitForTimeout(2000);
         await page.waitForSelector('#btn_next');
         await page.click('#btn_next');
 

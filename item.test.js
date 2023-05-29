@@ -1,6 +1,7 @@
 const puppeteer = require ('puppeteer');
 const chalk = require('chalk');
 const moment = require('moment');
+const { uniqueNamesGenerator, adjectives,languages } = require('unique-names-generator');
 const config = require('./config')
 
 let browser;
@@ -28,7 +29,7 @@ const issueMethod = config.issueMethod;
 const password = '1234';
 
 //Test Data
-const ItmName = ('ITEM ' + moment().format('MMM DD, h:mm:ss a')).toUpperCase(); //prevent duplicates of item Name
+const ItmName = ('ITEM ' + uniqueNamesGenerator({dictionaries: [adjectives, languages], style: 'capital', separator: ' '})).toUpperCase(); //prevent duplicates of item Name
 const requestedItm = ItmName;
 const verifiedItm = ItmName;
 const classifiedItm = ItmName;
@@ -37,7 +38,7 @@ beforeAll(async () => {
     browser = await puppeteer.launch(
         {
             devtools: false, 
-            headless: false, 
+            headless: true, 
             defaultViewport: null, 
             args: [
                 '--start-maximized', '--kiosk-printing', 

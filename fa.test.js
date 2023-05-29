@@ -1,6 +1,7 @@
 const puppeteer = require ('puppeteer');
 const chalk = require('chalk');
 const moment = require('moment');
+const { uniqueNamesGenerator, adjectives,languages } = require('unique-names-generator');
 const config = require('./config')
 
 let browser;
@@ -27,7 +28,7 @@ const assetSubClass=config.assetSubClass;
 const password = '1234';
 
 //Test Data
-const FaName = ('FA ' + moment().format('MMM DD, h:mm:ss a')).toUpperCase(); //prevent duplicates of item Name
+const FaName = ('FA ' + + uniqueNamesGenerator({dictionaries: [adjectives, languages], style: 'capital', separator: ' '})).toUpperCase(); //prevent duplicates of item Name
 const requestedFA = FaName;
 const verifiedFA = FaName;
 const classifiedFA = FaName;

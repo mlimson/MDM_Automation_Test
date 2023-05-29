@@ -33,7 +33,7 @@ beforeAll(async () => {
     browser = await puppeteer.launch(
         {
             devtools: false, 
-            headless: false, 
+            headless: true, 
             defaultViewport: null, 
             args: [
                 '--start-maximized', '--kiosk-printing', 
