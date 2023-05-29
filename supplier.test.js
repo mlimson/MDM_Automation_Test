@@ -1,7 +1,7 @@
 const puppeteer = require ('puppeteer');
 const chalk = require('chalk');
 const moment = require('moment');
-const { uniqueNamesGenerator, adjectives,languages } = require('unique-names-generator');
+const { uniqueNamesGenerator, adjectives,languages, names } = require('unique-names-generator');
 const config = require('./config')
 
 let browser;
@@ -33,7 +33,7 @@ beforeAll(async () => {
     browser = await puppeteer.launch(
         {
             devtools: false, 
-            headless: true, 
+            headless: false, 
             defaultViewport: null,
             args: [
                 '--start-maximized', '--kiosk-printing', 
