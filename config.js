@@ -11,6 +11,7 @@ const config = {
     astsg: process.env.astsg,
     gl: process.env.gl,
     BPGroup: process.env.BPGroup,
+    BPAccount: process.env.BPAccount,
     purchCode: process.env.purchCode,
     categoryName: process.env.categoryName,
     managedBy: process.env.managedBy,

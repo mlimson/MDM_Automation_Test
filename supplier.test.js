@@ -28,6 +28,7 @@ const password = '1234';
 const SuppName = uniqueNamesGenerator({dictionaries: [adjectives, languages, names], style: 'capital', separator: ' '}).toUpperCase(); //prevent duplicates of Supplier Name
 const requestedSupplier = SuppName;
 const approvedSupplier = SuppName;
+const BPAccount = config.BPAccount;
 
 beforeAll(async () => {
     browser = await puppeteer.launch(
@@ -369,9 +370,10 @@ describe('Validation for purchasing staff can update request created for suplier
         await page.click('#btn_next');
         
         //Upload attachments
+        await page.waitForTimeout(2000);
         const attachment = await page.$$('.custom-file-input');
         await attachment[0].uploadFile('C:\\Users\\BFI\\Pictures\\download.png');
-        
+        await page.waitForTimeout(2000);
         //---------Expected Result---------
         let attchField = await page.$eval('.custom-file-label', elem => elem.innerText);
         expect(attchField).not.toMatch('Choose a file or drop it here...');
@@ -558,7 +560,7 @@ describe('Validation for functional financials can process request for supplier 
         //---------Expected Results---------
         await page.waitForTimeout(2000);
         const accountsPayable = await page.$eval('.card-body > .row >.col > .row > .col-10 > #credit_limit_supp_add', elem => elem.value);
-        expect(accountsPayable).toMatch('( 211301000-400-000-000-000-000 ) - AP Others-AFC');
+        expect(accountsPayable).toMatch(BPAccount);
     }, 100000);//end of TC_SPLR_042
 
     //start of TC_SPLR_043
