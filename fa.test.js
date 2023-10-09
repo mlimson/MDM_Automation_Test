@@ -37,7 +37,7 @@ beforeAll(async () => {
     browser = await puppeteer.launch(
         {
             devtools: false, 
-            headless: false, 
+            headless: true, 
             defaultViewport: null, 
             args: [
                 '--start-maximized', '--kiosk-printing', 
@@ -339,6 +339,7 @@ describe('Validation for ASTSG can process fixed asset registration request', ()
         await page.waitForTimeout(2000);
         await page.waitForSelector('#classify_item_modal');
         await page.click('#classify_item_modal');
+        await page.waitForTimeout(2000);
         
         await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden: true});
 

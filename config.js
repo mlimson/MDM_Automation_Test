@@ -24,7 +24,9 @@ const config = {
     PAbpPrice: process.env.PAbpPrice,
     PAlocation: process.env.PAlocation,
     PAlocationPrice: process.env.PAlocationPrice,
-    PArequestID: process.env.PArequestID
+    PArequestID: process.env.PArequestID,
+    vendorCode: process.env.vendorCode,
+    customerCode: process.env.customerCode
 }
 
 module.exports = config

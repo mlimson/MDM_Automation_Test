@@ -24,9 +24,10 @@ const salesHead = config.salesHead;
 const functional = config.functional;
 const BPGroup = config.BPGroup
 const password = '1234';
+const customerCode = config.customerCode;
 
 //Test Data
-const CustName = uniqueNamesGenerator({dictionaries: [adjectives, languages, names], style: 'capital', separator: ' '}).toUpperCase(); //prevent duplicates of customer Name
+const CustName = "DIAZ , EDWIN";
 const requestedCustomer = 'AUTOMATED TESTING - CUSTOMER SEP 29, 1:35:08 PM';
 const approvedCustomer = 'AUTOMATED TESTING - CUSTOMER SEP 29, 1:35:08 PM';
 
@@ -34,11 +35,11 @@ beforeAll(async () => {
     browser = await puppeteer.launch(
         {
             devtools: false, 
-            headless: true, 
+            headless: false, 
             defaultViewport: null, 
             args: [
                 '--start-maximized', '--kiosk-printing', 
-                '--proxy-server=http://192.168.36.35:3128', 
+                //'--proxy-server=http://192.168.36.35:3128', 
                 '--disable-gpu',
                 '--disable-dev-shm-usage',
                 '--disable-setuid-sandbox',
@@ -54,11 +55,12 @@ afterAll(async () => {
 
 describe('Validation for sales staff can create request for customer registraton', () => {
     //start of TC_CSTMR_024
-    it('TC_CSTMR_024 Should allow creating request for new customer registration', async () => {
+    it('Should allow creating request for new customer registration', async () => {
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
     
+        await page.on('load');
         await page.type(IdField , salesStaff, {delay: 50}); //input valid username
         await page.waitForTimeout(2000);
         await page.type(PasswordField, password, {delay: 50}); //input valid password
@@ -84,66 +86,77 @@ describe('Validation for sales staff can create request for customer registraton
         await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden:true});
         
         //Select Business Partner Type
-        await page.waitForTimeout(1500);
+        await page.waitForTimeout(2000);
         await page.waitForSelector('#bp_type_supp_add');
         await page.select('#bp_type_supp_add', 'C');
         
         //Select Request Type
-        await page.waitForTimeout(1500);
+        await page.waitForTimeout(2000);
         await page.waitForSelector('#request_type_supp_add');
-        await page.select('#request_type_supp_add', 'N');
+        await page.select('#request_type_supp_add', 'U');
         
-        //Input Customer Name
-        await page.waitForSelector('#supp_name_add');
-        await page.type('#supp_name_add',CustName)
-        console.log(chalk.yellow("Customer Name: " + CustName));
+        await page.waitForSelector('#add_user');
+        await page.click('#add_user');
+        await page.waitForTimeout(2000);
+
+        await page.waitForSelector('.partner-table tbody > tr:nth-child(1) > td:nth-child(2)');
+
+        await page.waitForSelector('#search_partner_modal');
+        await page.type('#search_partner_modal', customerCode);
         
-        //Select Group
-        await page.waitForSelector('#group_cust_add');
-        await page.select('#group_cust_add', BPGroup);
+        await page.waitForSelector('.partner-table tbody > tr:nth-child(1) > td:nth-child(2)');
+        await page.click('.partner-table tbody > tr:nth-child(1) > td:nth-child(2)');
+
+        await page.waitForTimeout(2000);
+        await page.waitForSelector('#select_bp');
+        await page.click('#select_bp');
         
-        //Input TIN
-        await page.waitForSelector('#tin_cust_add');
-        const CustTIN = '321-321-32' + moment().format('DDhmmss'); //prevent duplicates of TIN
-        await page.type('#tin_cust_add', CustTIN);
+        await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden: true});
+
+        await page.waitForTimeout(2000);
 
         //Input Telephone Numbers
         await page.waitForSelector('#telephone_no_cust_add');
         const telPhone = await page.$$('#telephone_no_cust_add');
-        await telPhone[0].type('2424242242');
-        await telPhone[1].type('1238787780');
+        await telPhone[0].click({clickCount:2});
+        await telPhone[0].type('3901');
+        await telPhone[1].click({clickCount:2});
+        await telPhone[1].type('3906');
         
         //Input Mobile Number
-        await page.waitForSelector('#mobile_no_cust_add');
-        await page.type('#mobile_no_cust_add', '2124567890');
+        await page.waitForTimeout(2000);
+        await page.click('#mobile_no_cust_add',{clickCount:2});
+        await page.type('#mobile_no_cust_add', '09445123212');
 
         //Select Region
-        await page.waitForSelector('#region_cust_add');
+        await page.waitForTimeout(2000);
+        await page.click('#region_cust_add',{clickCount:2});
         await page.select('#region_cust_add', 'REGION XII');
         
         //Input Geographical Location
-        await page.waitForSelector('#geo_loc_cust_add');
-        await page.type('#geo_loc_cust_add', 'Geographical Location');
-        
-        //Toggle Issue Invoice
-        await page.waitForSelector('.card-body > .row > .col > .mt-3 > .custom-control-label');
-        await page.click('.card-body > .row > .col > .mt-3 > .custom-control-label');
+        await page.waitForTimeout(2000);
+        await page.click('#geo_loc_cust_add',{clickCount:2});
+        await page.type('#geo_loc_cust_add', 'New Geographical Location');
         
         //Navigate to Payment Terms Tab
+        await page.waitForTimeout(2000);
         await page.waitForSelector('#payment_terms___BV_tab_button__');
         await page.click('#payment_terms___BV_tab_button__');
         
         //Select Payment Terms
+        await page.waitForTimeout(2000);
         await page.waitForSelector('#payment_terms_supp_add');
         await page.select('#payment_terms_supp_add', 'PT102');
                 
         //Input Credit Limit
+        await page.waitForTimeout(2000);
         await page.click('#credit_limit_supp_add');
-        await page.type('#credit_limit_supp_add', '1234');
+        await page.type('#credit_limit_supp_add', '5000');
         
         //Input Commitment Limit
+        await page.waitForTimeout(2000);
         await page.click('#commitment_limit_supp_add');
-        await page.type('#commitment_limit_supp_add', '1234');
+        await page.type('#commitment_limit_supp_add', '5000');
 
         //---------Expected Result---------
         const nextBTN = await page.$('#btn_next[disabled]');
@@ -151,7 +164,7 @@ describe('Validation for sales staff can create request for customer registraton
     }, 100000);//end of TC_CSTMR_024
 
     //start of TC_CSTMR_025
-    it('TC_CSTMR_025 Should allow adding Address details', async() => {
+    it('Should allow adding Address details', async() => {
         await page.waitForTimeout(2000);
         await page.waitForSelector('#btn_next');
         await page.click('#btn_next');
@@ -217,7 +230,7 @@ describe('Validation for sales staff can create request for customer registraton
     }, 100000);//end of TC_CSTMR_025
 
     //start of TC_CSTMR_026
-    it('TC_CSTMR_026 Should allow adding Contact details', async () => {
+    it('Should allow adding Contact details', async () => {
         //Click Next button
         await page.waitForSelector('#btn_next');
         await page.click('#btn_next');
@@ -278,7 +291,7 @@ describe('Validation for sales staff can create request for customer registraton
     }, 100000);//end of TC_CSTMR_026
 
     //start of TC_CSTMR_027
-    it('TC_CSTMR_027 Should submit customer registration request', async () => {
+    it('Should submit customer registration request', async () => {
         //Click Submit button
         await page.waitForSelector('#btn_done');
         await page.click('#btn_done');
@@ -309,7 +322,7 @@ describe('Validation for sales staff can create request for customer registraton
 }, 500000),
 
 describe('Validation for sales staff can update request created for customer registration', () => {
-    it('TC_CSTMR_028 Should update customer request', async () => {
+    it('Should update customer request', async () => {
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
@@ -371,7 +384,7 @@ describe('Validation for sales staff can update request created for customer reg
 
 describe('Validation for Sales Head can approve customer registration request', () => {
     //start of TC_CSTMR_035
-    it('TC_CSTMR_035 Should approve new customer request', async () => {
+    it('Should approve customer request', async () => {
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
@@ -424,7 +437,7 @@ describe('Validation for Sales Head can approve customer registration request', 
 
 describe('Validation for functional financials can process customer registration request', () => {
     //start of TC_CSTMR_037
-    it('TC_CSTMR_037 Should process new customer registration request', async () => {
+    it('Should process customer registration request', async () => {
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
@@ -433,12 +446,13 @@ describe('Validation for functional financials can process customer registration
         //     height: 1080
         // });
     
+        await page.on('load');
         await page.on('domcontentloaded');
         const ptitle = await page.title();
         const title = 'Master Data Management System';
         expect(ptitle).toMatch(title);
 
-        console.log(chalk.green('TC_CSTMR_035 Should submit new customer request'));
+        console.log(chalk.green('Should submit customer request'));
         await page.waitForTimeout(2000);
 
         await page.type(IdField , functional, {delay: 50}); //input valid username
@@ -485,6 +499,9 @@ describe('Validation for functional financials can process customer registration
         await page.select('#vat_group_cust_process', 'VG112');
         await page.click('#vat_group_cust_process');
         
+        const BPCode = await page.$eval('#customer_code_process', elem => elem.value);
+        expect(BPCode).toBe(customerCode);
+
         //Click Next to proceed to Addresses
         await page.waitForTimeout(2000);
         await page.waitForSelector('#btn_next');

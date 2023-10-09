@@ -22,10 +22,11 @@ const company = config.company;
 const purchaser = config.purchaser;
 const purchasingHead = config.purchasingHead;
 const functional = config.functional;
+const vendorCode = config.vendorCode;
 const password = '1234';
 
 //Test Data
-const SuppName = uniqueNamesGenerator({dictionaries: [adjectives, languages, names], style: 'capital', separator: ' '}).toUpperCase(); //prevent duplicates of Supplier Name
+const SuppName = "SUCCESSFUL KANNADA ESTHER";
 const requestedSupplier = SuppName;
 const approvedSupplier = SuppName;
 const BPAccount = config.BPAccount;
@@ -54,15 +55,11 @@ afterAll(async () => {
 
 describe('Validation for purcahsing staff can create request for new supplier registration', () => {
     //start of TC_SPLR_024
-    it('TC_SPLR_024 Should allow creating request for new supplier registration', async () => {
+    it('Should allow creating request for new supplier registration', async () => {
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
-        await page.setViewport({
-            width: 1920,
-            height: 1080
-        });
-        
+
         await page.type(IdField , purchaser, {delay: 50}); //input valid username
         await page.type(PasswordField, password, {delay: 50}); //input valid password
         await page.click(LoginBtn); //click login button
@@ -94,86 +91,98 @@ describe('Validation for purcahsing staff can create request for new supplier re
         
         //Select Request Type
         await page.waitForSelector('#request_type_supp_add');
-        await page.select('#request_type_supp_add', 'N');
+        await page.select('#request_type_supp_add', 'U');
         
         //Input Supplier Name
         await page.waitForSelector('#supp_name_add');
         await page.type('#supp_name_add',SuppName)
         console.log(chalk.yellow(SuppName));
         
-        //Input Payee Name
-        await page.waitForSelector('#payee_name_supp_add');
-        await page.type('#payee_name_supp_add', SuppName);
-        
-        //Select Vendor Type
-        await page.waitForSelector('#vendor_type');
-        await page.select('#vendor_type', 'C');
-        
-        //Select Group
-        await page.waitForSelector('#group_supp_add');
-        await page.select('#group_supp_add', 'BV121');
+        //search Vendor
+        await page.waitForSelector('#add_user')
+        await page.click('#add_user')
 
-        //Select Currency
-        await page.waitForSelector('#currency_supp_add');
-        await page.select('#currency_supp_add', 'USD');
+        await page.waitForSelector('#find-partners-modal___BV_modal_header_');
+        await page.waitForTimeout(5000);
         
-        //Input TIN
-        await page.waitForSelector('#tin_supp_add');
-        const SuppTIN = '123-123-12' + moment().format('DDhmmss'); //prevent duplicates of TIN
-        await page.type('#tin_supp_add', SuppTIN);
+        await page.waitForSelector('.partner-table tbody > tr > td:nth-child(2)');
+
+        await page.waitForSelector('#search_partner_modal');
+        await page.type('#search_partner_modal', vendorCode);
+
+        await page.waitForTimeout(2500);
+
+        await page.waitForSelector('.partner-table tbody > tr > td:nth-child(1)')
+        await page.click('.partner-table tbody > tr > td:nth-child(1)');
+
+        await page.waitForSelector('#select_bp');
+        await page.click('#select_bp');        
         
+        await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden: true});
+        
+        await page.waitForSelector('#find-partners-modal___BV_modal_header_' , {hiddent: true});
+
         //Input Telephone Numbers
+        await page.waitForTimeout(2500);
         await page.waitForSelector('#telephone_no_supp_add');
         const telPhone = await page.$$('#telephone_no_supp_add');
-        await telPhone[0].type('2424242242');
-        await telPhone[1].type('1238787780');
+        await telPhone[0].click({clickCount:2});
+        await telPhone[0].type('5539198');
+        await telPhone[1].click({clickCount:2});
+        await telPhone[1].type('5539199');
         
         //Input Mobile Number
+        await page.waitForTimeout(2000);
         const field = await page.$$('#mobile_no_supp_add');
-        await field[0].type('2124567890');
+        await field[0].click({clickCount:2});
+        await field[0].type('09771352610');
 
         //Input Fax
-        await field[1].type('215415813223');
+        await page.waitForTimeout(2000);
+        await field[1].click({clickCount:2});
+        await field[1].type('000000000');
         
         //Input E-mail
-        await field[2].type('vendor_email@email.com');
+        await page.waitForTimeout(2000);
+        await field[2].click({clickCount:2});
+        await field[2].type('Updatedvendor_email@email.com');
         
         //Input Website
-        await field[3].type('#website_supp_add', 'vendor-site.nat');
-        
-        //Select Region
-        await page.select('#region_supp_add', 'REGION XII');
+        await page.waitForTimeout(2000);
+        await field[3].click({clickCount:2});
+        await field[3].type('#website_supp_add', 'updatedvendor-site.nat');
         
         //Input Business Style / Trade Name
-        await page.type('#bus_style', 'BussStyle');
+        await page.waitForTimeout(2000);
+        await page.click('#bus_style',{clickCount:2});
+        await page.type('#bus_style', 'New Style');
         
         //Input Nature OF Business
-        await page.type('#nature_of_business_add', 'Nature Of Business');
+        await page.waitForTimeout(2000);
+        await page.click('#nature_of_business_add',{clickCount:2});
+        await page.type('#nature_of_business_add', 'Updated Nature');
         
         //Input Geographical Location
-        await page.type('#geo_loc_supp_add', 'Geographical Location');
-        
-        //Toggle Issue Invoice
-        await page.click('.card-body > .row > .col > .mt-3 > .custom-control-label');
+        await page.click('#geo_loc_supp_add',{clickCount:2})
+        await page.type('#geo_loc_supp_add', 'Update Geographical Location');
         
         //Navigate to Payment Terms tab
         await page.click('#payment_terms___BV_tab_button__');
         
         //Select Payment Terms
+        await page.waitForTimeout(2000);
         await page.waitForSelector('#payment_terms_supp_add');
-        await page.select('#payment_terms_supp_add', 'PT102');
-        
-        //Select Price List        
-        await page.waitForSelector('#price_list_supp_add');
-        await page.select('#price_list_supp_add', 'PL103');
+        await page.select('#payment_terms_supp_add', 'PT115');
         
         //Input Credit Limit
-        await page.click('#credit_limit_supp_add');
-        await page.type('#credit_limit_supp_add', '1234');
+        await page.waitForTimeout(2000);
+        await page.click('#credit_limit_supp_add',{clickCount:2});
+        await page.type('#credit_limit_supp_add', '50000');
         
         //Input Commitment Limit
-        await page.click('#commitment_limit_supp_add');
-        await page.type('#commitment_limit_supp_add', '1234');
+        await page.waitForTimeout(2000);
+        await page.click('#commitment_limit_supp_add',{clickCount:2});
+        await page.type('#commitment_limit_supp_add', '50000');
  
         //---------Expected Result---------
         const nextBTN = await page.$('#btn_next[disabled]');
@@ -181,44 +190,38 @@ describe('Validation for purcahsing staff can create request for new supplier re
     }, 100000);//end of TC_SPLR_024
 
     //start of TC_SPLR_025
-    it('TC_SPLR_025 Should allow adding Address details', async() => {
+    it('Should allow adding Address details', async() => {
         await page.click('#btn_next');
 
         //Select Address Type
         await page.select('#address_type_add', 'B');
 
         //Input Address Name 2
-        await page.type('#address2_add', 'Office Address');
+        await page.type('#address2_add', 'New Office Address');
         
         //Input Address Name 3
-        await page.type('#address3_add', 'Main Branch');
+        await page.type('#address3_add', 'New Branch');
         
         //Input Street
-        await page.type('#street_add', 'Jefferson St N');
+        await page.type('#street_add', 'New Street');
         
         //Input Street Number
-        await page.type('#street_no_add', '201');
+        await page.type('#street_no_add', '211');
         
         //Input Building / Floor / Room
-        await page.type('#bldg_flr_rm_add', 'The Avenue Apartments');
+        await page.type('#bldg_flr_rm_add', 'The New Avenue Apartments');
         
         //Input Block
-        await page.type('#block_add', 'Blk 15');
+        await page.type('#block_add', 'New Blk 15');
         
         //Input City / Town
-        await page.type('#town_city_add', 'Huntsville');
+        await page.type('#town_city_add', 'New Huntsville');
         
         //Zip Code
-        await page.type('#zip_code_add', '35801');
+        await page.type('#zip_code_add', '66520');
         
         //Input County / Province
-        await page.type('#county_add', 'Madison County')
-        
-        //Select Country
-        await page.select('#country_add', 'US');
-        
-        //Select State
-        await page.select('#state_add', 'AL');
+        await page.type('#county_add', 'New Madison County')
         
         //Click Add Address button
         await page.waitForTimeout(2000);
@@ -232,10 +235,11 @@ describe('Validation for purcahsing staff can create request for new supplier re
         
         const tableRow = await page.$('.cardShadow > .card-body > .table > #address_table_supp > tbody > .b-table-empty-row > td');
         expect(tableRow).toBeFalsy();
+        await page.waitForTimeout(2000);
     }, 100000);//end of TC_SPLR_025
 
     //start of TC_SPLR_026
-    it('TC_SPLR_026 Should allow adding Contact details', async () => {
+    it('Should allow adding Contact details', async () => {
         //Click Next button
         await page.waitForSelector('#btn_next');
         await page.click('#btn_next');
@@ -244,7 +248,7 @@ describe('Validation for purcahsing staff can create request for new supplier re
         await page.type('#contact_title_add', 'HR');
         
         //Input First Name
-        await page.type('#contacts_fname_add', 'Muriel');
+        await page.type('#contacts_fname_add', 'Eustace');
         
         //Input Middle Name
         await page.type('#contacts_mname_add', 'Courage')
@@ -253,24 +257,24 @@ describe('Validation for purcahsing staff can create request for new supplier re
         await page.type('#contacts_lname_add', 'Bagge')
         
         //Input Job Title
-        await page.type('#contacts_job_title_add', 'Human Resource Staff');
+        await page.type('#contacts_job_title_add', 'Branch Manager');
         
         //Input Contact Address
-        await page.type('#contacts_address_add', 'Fairfield, Connecticut');
+        await page.type('#contacts_address_add', 'New Bohol, Gensan');
         
         //Input Telephone
         const phoneNum = await page.$$('#contacts_phone_no_add');
-        await phoneNum[0].type('2124567890');
-        await phoneNum[1].type('2125765915');
+        await phoneNum[0].type('3901');
+        await phoneNum[1].type('3906');
         
         //Input Mobile Number
-        await page.type('#contacts_mobile_no_add', '2124567890');
+        await page.type('#contacts_mobile_no_add', '09151232115');
         
         //Input Fax
-        await page.type('#contacts_fax_no_add', '2124567890');
+        await page.type('#contacts_fax_no_add', '1212120');
         
         //Input Email Address
-        await page.type('#email_add_contacts_add', 'muriel.bagge@email.com');
+        await page.type('#email_add_contacts_add', 'eustace.bagge@email.com');
         
         //Click add Contact button
         await page.waitForSelector('#add_contacts');
@@ -282,10 +286,11 @@ describe('Validation for purcahsing staff can create request for new supplier re
         
         const tableRow = await page.$('.table > #address_table > tbody > .b-table-empty-row > td');
         expect(tableRow).toBeFalsy();
+        await page.waitForTimeout(2000);
     }, 100000);//end of TC_SPLR_026
 
     //start of TC_SPLR_027
-    it('TC_SPLR_027 Should submit request', async () => {
+    it('Should submit request', async () => {
         //Click Next button
         await page.waitForSelector('#btn_next');
         await page.click('#btn_next');
@@ -308,7 +313,6 @@ describe('Validation for purcahsing staff can create request for new supplier re
         expect(alert).toMatch('Success');
         
         //search request
-        await page.waitForTimeout(2500);
         await page.waitForSelector('#request_supplier_search');
         const searchBar = await page.$$('#request_supplier_search');
         await searchBar[0].type(SuppName);
@@ -321,7 +325,7 @@ describe('Validation for purcahsing staff can create request for new supplier re
 
 describe('Validation for purchasing staff can update request created for suplier registration', () => {
     //start of TC_SPLR_028
-    it('TC_SPLR_028 Should update supplier request', async () => {
+    it('Should update supplier request', async () => {
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
@@ -365,7 +369,7 @@ describe('Validation for purchasing staff can update request created for suplier
     }, 100000);//end of TC_SPLR_028
 
     //start of TC_SPLR_029
-    it('TC_SPLR_029 Should attach Documents', async () => {
+    it('Should attach Documents', async () => {
         //Click Next button to proceed to attachments
         await page.waitForSelector('#btn_next');
         await page.click('#btn_next');
@@ -381,7 +385,7 @@ describe('Validation for purchasing staff can update request created for suplier
     }, 100000);//end of TC_SPLR_029
 
     //start of TC_SPLR_030
-    it('TC_SPLR_030 Should submit request', async () => {
+    it('Should submit request', async () => {
         //Click Next button to proceed to Signatories
         await page.waitForSelector('#btn_next');
         await page.click('#btn_next');
@@ -412,7 +416,7 @@ describe('Validation for purchasing staff can update request created for suplier
 
 describe('Validation for purchasing head can approve request for supplier registration', () => {
     //start of TC_SPLR_037
-    it('TC_SPLR_037 Should approve new supplier request', async () => {
+    it('Should approve supplier request', async () => {
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
@@ -466,7 +470,7 @@ describe('Validation for purchasing head can approve request for supplier regist
 
 describe('Validation for functional financials can process request for supplier registration', () => {
     //start of TC_SPLR_040
-    it('TC_SPLR_040 Should select VAT Definition and Group', async () => {
+    it('Should select VAT Definition and Group', async () => {
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
@@ -499,13 +503,16 @@ describe('Validation for functional financials can process request for supplier 
         await page.select('#vat_group_supp_process', 'VG108');
 
         //---------Expected Result---------
+        const BPCode = await page.$eval('#supplier_code_process', elem => elem.value);
+        expect(BPCode).toBe(vendorCode);
+
         await page.waitForTimeout(2000);
         const nextBTN = await page.$('#btn_next[disabled]');
         expect(nextBTN).toBeFalsy();
     }, 100000);//end of TC_SPLR_040
 
     //start of TC_SPLR_041
-    it('TC_SPLR_041 Should allow adding Bank Account', async () => {
+    it('Should allow adding Bank Account', async () => {
         // Navigate to Bank Accounts tab
         await page.waitForSelector('#bank-accounts___BV_tab_button__');
         await page.click('#bank-accounts___BV_tab_button__');
@@ -552,20 +559,8 @@ describe('Validation for functional financials can process request for supplier 
         expect(tableRow).toBeFalsy();
     }, 100000);//end of TC_SPLR_041
 
-    //start of TC_SPLR_042
-    it('TC_SPLR_042 Should show default Account', async () => {
-        //Navigate to Accounting Inputs tab
-        page.waitForSelector('#accounting___BV_tab_button__');
-        await page.click('#accounting___BV_tab_button__');
-        
-        //---------Expected Results---------
-        await page.waitForTimeout(2000);
-        const accountsPayable = await page.$eval('.card-body > .row >.col > .row > .col-10 > #credit_limit_supp_add', elem => elem.value);
-        expect(accountsPayable).toMatch(BPAccount);
-    }, 100000);//end of TC_SPLR_042
-
     //start of TC_SPLR_043
-    it('TC_SPLR_043 Should submit request', async () => {
+    it('Should submit request', async () => {
         //Click Next button to proceed to Addresses
         await page.waitForSelector('#btn_next');
         await page.click('#btn_next');
@@ -598,7 +593,7 @@ describe('Validation for functional financials can process request for supplier 
         //Search processed Supplier request
         await page.waitForSelector('#request_supplier_search');
         const searchBar = await page.$$('#request_supplier_search');
-        await searchBar[2].type(approvedSupplier, {delay:50});
+        await searchBar[2].type(SuppName, {delay:50});
 
         //validate status
         await page.waitForSelector('tbody > tr > td > .badge-font-size > .badge-fourth-level');
