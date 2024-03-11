@@ -34,7 +34,7 @@ beforeAll(async () => {
     browser = await puppeteer.launch(
         {
             devtools: false, 
-            headless: true, 
+            headless: false, 
             defaultViewport: null, 
             args: [
                 '--start-maximized', '--kiosk-printing', 
@@ -419,7 +419,313 @@ describe('Validation for Sales Head can approve customer registration request', 
         const status = await page.$eval('tbody > tr > td > .badge-font-size > .badge-third-level', elem => elem.innerText);
         expect(status).toMatch('Approved');
     }, 100000);//end of TC_CSTMR_035
+}, 500000),
 
+describe('Validation for error if customer name was already requested', () => {
+    //start of TC_CSTMR_024
+    it('Should not allow request for already requested customer name', async () => {
+        page = await browser.newPage();
+        await page.setDefaultNavigationTimeout(0);
+        await page.goto(pageURL, {waitUntil: 'networkidle0'});
+    
+        await page.type(IdField , salesStaff, {delay: 50}); //input valid username
+        await page.waitForTimeout(2000);
+        await page.type(PasswordField, password, {delay: 50}); //input valid password
+        await page.click(LoginBtn); //click login button
+
+        //Navigate to Customers Menu
+        await page.waitForSelector('#sb_customers');
+        await page.click('#sb_customers');
+        
+        //Navigate to Request tab
+        await page.waitForTimeout(2000);
+        await page.waitForSelector('#customer_request___BV_tab_button__');
+        await page.click('#customer_request___BV_tab_button__');
+        
+        //Click Create request button
+        await page.waitForSelector('#btn_create_request_customer');
+        await page.click('#btn_create_request_customer');
+
+        //Select Company
+        await page.waitForSelector('#filter_company');
+        await page.select('#filter_company', company);
+
+        await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden:true});
+        
+        //Select Business Partner Type
+        await page.waitForTimeout(1500);
+        await page.waitForSelector('#bp_type_supp_add');
+        await page.select('#bp_type_supp_add', 'C');
+        
+        //Select Request Type
+        await page.waitForTimeout(1500);
+        await page.waitForSelector('#request_type_supp_add');
+        await page.select('#request_type_supp_add', 'N');
+        
+        //Input Customer Name
+        await page.waitForSelector('#supp_name_add');
+        await page.type('#supp_name_add',CustName)
+        console.log(chalk.yellow(CustName));
+        
+        //Select Group
+        await page.waitForSelector('#group_cust_add');
+        await page.select('#group_cust_add', BPGroup);
+        
+        //Input Mobile Number
+        await page.waitForSelector('#mobile_no_cust_add');
+        await page.type('#mobile_no_cust_add', '2124567890');
+        
+        //Navigate to Payment Terms Tab
+        await page.waitForSelector('#payment_terms___BV_tab_button__');
+        await page.click('#payment_terms___BV_tab_button__');
+        
+        //Select Payment Terms
+        await page.waitForSelector('#payment_terms_supp_add');
+        await page.select('#payment_terms_supp_add', 'PT102');
+
+        await page.waitForTimeout(2000);
+        await page.waitForSelector('#btn_next');
+        await page.click('#btn_next');
+
+        //Select Address Type
+        await page.waitForSelector('#address_type_add');
+        await page.select('#address_type_add', 'S');
+        
+        //Input Street
+        await page.waitForSelector('#street_add');
+        await page.type('#street_add', 'Jefferson St N');
+        
+        //Input Street Number
+        await page.waitForSelector('#street_no_add');
+        await page.type('#street_no_add', '201');
+        
+        //Input Building / Floor / Room
+        await page.waitForSelector('#bldg_flr_rm_add');
+        await page.type('#bldg_flr_rm_add', 'The Avenue Apartments');
+        
+        //Input Block
+        await page.waitForSelector('#block_add');
+        await page.type('#block_add', 'Blk 15');
+        
+        //Input City / Town
+        await page.waitForSelector('#town_city_add');
+        await page.type('#town_city_add', 'Huntsville');
+        
+        //Zip Code
+        await page.waitForSelector('#zip_code_add');
+        await page.type('#zip_code_add', '35801');
+        
+        //Input County / Province
+        await page.waitForSelector('#county_add')
+        await page.type('#county_add', 'Madison County')
+        
+        //Click Add Address button
+        await page.waitForSelector('#add_address');
+        await page.click('#add_address');
+
+        //Click Next button
+        await page.waitForSelector('#btn_next');
+        await page.click('#btn_next');
+        await page.waitForTimeout(2000);
+        
+        //Input First Name
+        await page.waitForSelector('#contacts_fname_add');
+        await page.type('#contacts_fname_add', 'Muriel');
+        
+        //Input Last Name
+        await page.waitForSelector('#contacts_lname_add')
+        await page.type('#contacts_lname_add', 'Bagge')
+        
+        //Click add Contact button
+        await page.waitForSelector('#add_contacts');
+        await page.click('#add_contacts');
+
+        //Click Submit button
+        await page.waitForSelector('#btn_done');
+        await page.click('#btn_done');
+        await page.waitForTimeout(2000);
+        
+        //Click Yes button
+        await page.waitForSelector('#btn_save_submit-create');
+        await page.click('#btn_save_submit-create');
+        await page.waitForTimeout(2500);
+        //wait for loading to stop
+        await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden: true})
+        
+        //---------Expected Result---------
+        await page.waitForSelector('#alert-requestCust');
+        const alert = await page.$eval('#alert-requestCust', elem => elem.innerText);
+        expect(alert).toMatch(/BP already exist with request no: /);
+    }, 100000);//end of TC_CSTMR_024
+}, 500000),
+
+describe('Validation for error if customer name is already existing in SAP', () => {
+    //start of TC_CSTMR_024
+    it('Should not allow request for already requested customer name', async () => {
+        page = await browser.newPage();
+        await page.setDefaultNavigationTimeout(0);
+        await page.goto(pageURL, {waitUntil: 'networkidle0'});
+    
+        await page.type(IdField , salesStaff, {delay: 50}); //input valid username
+        await page.waitForTimeout(2000);
+        await page.type(PasswordField, password, {delay: 50}); //input valid password
+        await page.click(LoginBtn); //click login button
+
+        //Navigate to Customers Menu
+        await page.waitForSelector('#sb_customers');
+        await page.click('#sb_customers');
+        
+        //Navigate to Request tab
+        await page.waitForTimeout(2000);
+        await page.waitForSelector('#customer_request___BV_tab_button__');
+        await page.click('#customer_request___BV_tab_button__');
+        
+        //Click Create request button
+        await page.waitForSelector('#btn_create_request_customer');
+        await page.click('#btn_create_request_customer');
+
+        //Select Company
+        await page.waitForSelector('#filter_company');
+        await page.select('#filter_company', company);
+
+        await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden:true});
+        
+        //Select Business Partner Type
+        await page.waitForTimeout(1500);
+        await page.waitForSelector('#bp_type_supp_add');
+        await page.select('#bp_type_supp_add', 'C');
+        
+        //Select Request Type
+        await page.waitForTimeout(1500);
+        await page.waitForSelector('#request_type_supp_add');
+        await page.select('#request_type_supp_add', 'N');
+        
+        //Input Customer Name
+        await page.waitForSelector('#supp_name_add');
+        await page.type('#supp_name_add',"KCC PROPERTY HOLDINGS, INC.")
+        console.log(chalk.yellow("Customer Name: KCC PROPERTY HOLDINGS, INC."));
+        
+        //Select Group
+        await page.waitForSelector('#group_cust_add');
+        await page.select('#group_cust_add', BPGroup);
+        
+        //Input TIN
+        await page.waitForSelector('#tin_cust_add');
+        const CustTIN = '321-321-32' + moment().format('DDhmmss'); //prevent duplicates of TIN
+        await page.type('#tin_cust_add', CustTIN);
+
+        //Input Telephone Numbers
+        await page.waitForSelector('#telephone_no_cust_add');
+        const telPhone = await page.$$('#telephone_no_cust_add');
+        await telPhone[0].type('2424242242');
+        await telPhone[1].type('1238787780');
+        
+        //Input Mobile Number
+        await page.waitForSelector('#mobile_no_cust_add');
+        await page.type('#mobile_no_cust_add', '2124567890');
+
+        //Select Region
+        await page.waitForSelector('#region_cust_add');
+        await page.select('#region_cust_add', 'REGION XII');
+        
+        //Input Geographical Location
+        await page.waitForSelector('#geo_loc_cust_add');
+        await page.type('#geo_loc_cust_add', 'Geographical Location');
+        
+        //Toggle Issue Invoice
+        await page.waitForSelector('.card-body > .row > .col > .mt-3 > .custom-control-label');
+        await page.click('.card-body > .row > .col > .mt-3 > .custom-control-label');
+        
+        //Navigate to Payment Terms Tab
+        await page.waitForSelector('#payment_terms___BV_tab_button__');
+        await page.click('#payment_terms___BV_tab_button__');
+        
+        //Select Payment Terms
+        await page.waitForSelector('#payment_terms_supp_add');
+        await page.select('#payment_terms_supp_add', 'PT102');
+                
+        //Input Credit Limit
+        await page.click('#credit_limit_supp_add');
+        await page.type('#credit_limit_supp_add', '1234');
+        
+        //Input Commitment Limit
+        await page.click('#commitment_limit_supp_add');
+        await page.type('#commitment_limit_supp_add', '1234');
+
+        await page.waitForTimeout(2000);
+        await page.waitForSelector('#btn_next');
+        await page.click('#btn_next');
+
+        //Select Address Type
+        await page.waitForSelector('#address_type_add');
+        await page.select('#address_type_add', 'S');
+        
+        //Input Street
+        await page.waitForSelector('#street_add');
+        await page.type('#street_add', 'Jefferson St N');
+        
+        //Input Street Number
+        await page.waitForSelector('#street_no_add');
+        await page.type('#street_no_add', '201');
+        
+        //Input Building / Floor / Room
+        await page.waitForSelector('#bldg_flr_rm_add');
+        await page.type('#bldg_flr_rm_add', 'The Avenue Apartments');
+        
+        //Input Block
+        await page.waitForSelector('#block_add');
+        await page.type('#block_add', 'Blk 15');
+        
+        //Input City / Town
+        await page.waitForSelector('#town_city_add');
+        await page.type('#town_city_add', 'Huntsville');
+        
+        //Zip Code
+        await page.waitForSelector('#zip_code_add');
+        await page.type('#zip_code_add', '35801');
+        
+        //Input County / Province
+        await page.waitForSelector('#county_add')
+        await page.type('#county_add', 'Madison County')
+        
+        //Click Add Address button
+        await page.waitForSelector('#add_address');
+        await page.click('#add_address');
+
+        //Click Next button
+        await page.waitForSelector('#btn_next');
+        await page.click('#btn_next');
+        await page.waitForTimeout(2000);
+        
+        //Input First Name
+        await page.waitForSelector('#contacts_fname_add');
+        await page.type('#contacts_fname_add', 'Muriel');
+    
+        //Input Last Name
+        await page.waitForSelector('#contacts_lname_add')
+        await page.type('#contacts_lname_add', 'Bagge')
+        
+        //Click add Contact button
+        await page.waitForSelector('#add_contacts');
+        await page.click('#add_contacts');
+
+        //Click Submit button
+        await page.waitForSelector('#btn_done');
+        await page.click('#btn_done');
+        await page.waitForTimeout(2000);
+        
+        //Click Yes button
+        await page.waitForSelector('#btn_save_submit-create');
+        await page.click('#btn_save_submit-create');
+        await page.waitForTimeout(2500);
+        //wait for loading to stop
+        await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden: true})
+        
+        //---------Expected Result---------
+        await page.waitForSelector('#alert-requestCust');
+        const alert = await page.$eval('#alert-requestCust', elem => elem.innerText);
+        expect(alert).toMatch(/already exist/);
+    }, 100000);//end of TC_CSTMR_024
 }, 500000),
 
 describe('Validation for functional financials can process customer registration request', () => {
@@ -529,5 +835,223 @@ describe('Validation for functional financials can process customer registration
         
         await page.waitForTimeout(2500);        
     }, 100000);//end of TC_CSTMR_037
+}, 500000),
 
+describe('Validation for error if customer name already exists in SAP', () => {
+    //start of TC_CSTMR_024
+    it('Should not allow request for existing customer name in SAP', async () => {
+        page = await browser.newPage();
+        await page.setDefaultNavigationTimeout(0);
+        await page.goto(pageURL, {waitUntil: 'networkidle0'});
+    
+        await page.type(IdField , salesStaff, {delay: 50}); //input valid username
+        await page.waitForTimeout(2000);
+        await page.type(PasswordField, password, {delay: 50}); //input valid password
+        await page.click(LoginBtn); //click login button
+
+        //Navigate to Customers Menu
+        await page.waitForSelector('#sb_customers');
+        await page.click('#sb_customers');
+        
+        //Navigate to Request tab
+        await page.waitForTimeout(2000);
+        await page.waitForSelector('#customer_request___BV_tab_button__');
+        await page.click('#customer_request___BV_tab_button__');
+        
+        //Click Create request button
+        await page.waitForSelector('#btn_create_request_customer');
+        await page.click('#btn_create_request_customer');
+
+        //Select Company
+        await page.waitForSelector('#filter_company');
+        await page.select('#filter_company', company);
+
+        await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden:true});
+        
+        //Select Business Partner Type
+        await page.waitForTimeout(1500);
+        await page.waitForSelector('#bp_type_supp_add');
+        await page.select('#bp_type_supp_add', 'C');
+        
+        //Select Request Type
+        await page.waitForTimeout(1500);
+        await page.waitForSelector('#request_type_supp_add');
+        await page.select('#request_type_supp_add', 'N');
+        
+        //Input Customer Name
+        await page.waitForSelector('#supp_name_add');
+        await page.type('#supp_name_add',"KCC PROPERTY HOLDINGS, INC.")
+        console.log(chalk.yellow("Customer Name: KCC PROPERTY HOLDINGS, INC."));
+        
+        //Select Group
+        await page.waitForSelector('#group_cust_add');
+        await page.select('#group_cust_add', BPGroup);
+        
+        //Input TIN
+        await page.waitForSelector('#tin_cust_add');
+        const CustTIN = '321-321-32' + moment().format('DDhmmss'); //prevent duplicates of TIN
+        await page.type('#tin_cust_add', CustTIN);
+
+        //Input Telephone Numbers
+        await page.waitForSelector('#telephone_no_cust_add');
+        const telPhone = await page.$$('#telephone_no_cust_add');
+        await telPhone[0].type('2424242242');
+        await telPhone[1].type('1238787780');
+        
+        //Input Mobile Number
+        await page.waitForSelector('#mobile_no_cust_add');
+        await page.type('#mobile_no_cust_add', '2124567890');
+
+        //Select Region
+        await page.waitForSelector('#region_cust_add');
+        await page.select('#region_cust_add', 'REGION XII');
+        
+        //Input Geographical Location
+        await page.waitForSelector('#geo_loc_cust_add');
+        await page.type('#geo_loc_cust_add', 'Geographical Location');
+        
+        //Toggle Issue Invoice
+        await page.waitForSelector('.card-body > .row > .col > .mt-3 > .custom-control-label');
+        await page.click('.card-body > .row > .col > .mt-3 > .custom-control-label');
+        
+        //Navigate to Payment Terms Tab
+        await page.waitForSelector('#payment_terms___BV_tab_button__');
+        await page.click('#payment_terms___BV_tab_button__');
+        
+        //Select Payment Terms
+        await page.waitForSelector('#payment_terms_supp_add');
+        await page.select('#payment_terms_supp_add', 'PT102');
+                
+        //Input Credit Limit
+        await page.click('#credit_limit_supp_add');
+        await page.type('#credit_limit_supp_add', '1234');
+        
+        //Input Commitment Limit
+        await page.click('#commitment_limit_supp_add');
+        await page.type('#commitment_limit_supp_add', '1234');
+
+        await page.waitForTimeout(2000);
+        await page.waitForSelector('#btn_next');
+        await page.click('#btn_next');
+
+        //Select Address Type
+        await page.waitForSelector('#address_type_add');
+        await page.select('#address_type_add', 'S');
+
+        //Input Address Name 2
+        await page.waitForSelector('#address2_add');
+        await page.type('#address2_add', 'Office Address');
+        
+        //Input Address Name 3
+        await page.waitForSelector('#address3_add');
+        await page.type('#address3_add', 'Main Branch');
+        
+        //Input Street
+        await page.waitForSelector('#street_add');
+        await page.type('#street_add', 'Jefferson St N');
+        
+        //Input Street Number
+        await page.waitForSelector('#street_no_add');
+        await page.type('#street_no_add', '201');
+        
+        //Input Building / Floor / Room
+        await page.waitForSelector('#bldg_flr_rm_add');
+        await page.type('#bldg_flr_rm_add', 'The Avenue Apartments');
+        
+        //Input Block
+        await page.waitForSelector('#block_add');
+        await page.type('#block_add', 'Blk 15');
+        
+        //Input City / Town
+        await page.waitForSelector('#town_city_add');
+        await page.type('#town_city_add', 'Huntsville');
+        
+        //Zip Code
+        await page.waitForSelector('#zip_code_add');
+        await page.type('#zip_code_add', '35801');
+        
+        //Input County / Province
+        await page.waitForSelector('#county_add')
+        await page.type('#county_add', 'Madison County')
+        
+        //Select Country
+        await page.waitForSelector('#country_add');
+        await page.select('#country_add', 'US');
+        
+        //Select State
+        await page.waitForTimeout(2500);
+        await page.select('#state_add', 'AL');
+        
+        //Click Add Address button
+        await page.waitForSelector('#add_address');
+        await page.click('#add_address');
+
+        //Click Next button
+        await page.waitForSelector('#btn_next');
+        await page.click('#btn_next');
+        await page.waitForTimeout(2000);
+        
+        //Input Contact Title
+        await page.waitForSelector('#contact_title_add');
+        await page.type('#contact_title_add', 'HR');
+        
+        //Input First Name
+        await page.waitForSelector('#contacts_fname_add');
+        await page.type('#contacts_fname_add', 'Muriel');
+        
+        //Input Middle Name
+        await page.waitForSelector('#contacts_mname_add')
+        await page.type('#contacts_mname_add', 'Courage')
+        
+        //Input Last Name
+        await page.waitForSelector('#contacts_lname_add')
+        await page.type('#contacts_lname_add', 'Bagge')
+        
+        //Input Job Title
+        await page.waitForSelector('#contacts_job_title_add');
+        await page.type('#contacts_job_title_add', 'Human Resource Staff');
+        
+        //Input Contact Address
+        await page.waitForSelector('#contacts_address_add');
+        await page.type('#contacts_address_add', 'Fairfield, Connecticut');
+        
+        //Input Telephone
+        await page.waitForSelector('#contacts_phone_no_add');
+        const phoneNum = await page.$$('#contacts_phone_no_add');
+        await phoneNum[0].type('2124567890');
+        await phoneNum[1].type('2125765915');
+        
+        //Input Mobile Number
+        await page.waitForSelector('#contacts_mobile_no_add');
+        await page.type('#contacts_mobile_no_add', '2124567890');
+        
+        //Input Fax
+        await page.waitForSelector('#contacts_fax_no_add');
+        await page.type('#contacts_fax_no_add', '2124567890');
+        
+        //Input Email Address
+        await page.waitForSelector('#email_add_contacts_add');
+        await page.type('#email_add_contacts_add', 'muriel.bagge@email.com');
+        
+        //Click add Contact button
+        await page.waitForSelector('#add_contacts');
+        await page.click('#add_contacts');
+
+        //Click Submit button
+        await page.waitForSelector('#btn_done');
+        await page.click('#btn_done');
+        await page.waitForTimeout(2000);
+        
+        //Click Yes button
+        await page.waitForSelector('#btn_save_submit-create');
+        await page.click('#btn_save_submit-create');
+        await page.waitForTimeout(2500);
+        //wait for loading to stop
+        await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden: true})
+        
+        //---------Expected Result---------
+        await page.waitForSelector('#alert-requestCust');
+        const alert = await page.$eval('#alert-requestCust', elem => elem.innerText);
+        expect(alert).toMatch("'KCC PROPERTY HOLDINGS, INC.' already exists.");
+    }, 100000);//end of TC_CSTMR_024
 }, 500000)
