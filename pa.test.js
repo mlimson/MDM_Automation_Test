@@ -33,11 +33,11 @@ beforeAll(async () => {
     browser = await puppeteer.launch(
         {
             devtools: false, 
-            headless: true, 
+            headless: false, 
             defaultViewport: null, 
             args: [
                 '--start-maximized', '--kiosk-printing', 
-                '--proxy-server=http://192.168.36.35:3128', 
+                // '--proxy-server=http://192.168.36.35:3128', 
                 '--disable-gpu',
                 '--disable-dev-shm-usage',
                 '--disable-setuid-sandbox',
@@ -79,8 +79,8 @@ describe('Validation for creating request for price approval', () => {
         await page.waitForTimeout(1500);
         
         //Select Company
-        await page.waitForSelector('#select_company');
-        await page.select('#select_company', company);
+        await page.waitForSelector('.select_company');
+        await page.select('.select_company', company);
         await page.waitForTimeout(1500);
 
         //Select Price By
@@ -124,6 +124,12 @@ describe('Validation for creating request for price approval', () => {
         const alert = await page.$eval('#tab-request-price > .card-text > .container-fluid > div > .alert', elem => elem.innerText);
         expect(alert).toMatch(' Transaction added.');
         await page.waitForTimeout(1500);
+
+        await page.waitForSelector('#btn-logout')
+        await page.click('#btn-logout')
+        
+        await page.waitForSelector('#btn-save-logout')
+        await page.click('#btn-save-logout')
     }, 100000);
 
     it('Should create request for Price Per Business Partners', async() => {
@@ -153,8 +159,8 @@ describe('Validation for creating request for price approval', () => {
         await page.waitForTimeout(1500);
         
         //Select Company
-        await page.waitForSelector('#select_company');
-        await page.select('#select_company', company);
+        await page.waitForSelector('.select_company');
+        await page.select('.select_company', company);
         await page.waitForTimeout(1500);
 
         //Select Price By
@@ -205,6 +211,12 @@ describe('Validation for creating request for price approval', () => {
         const alert = await page.$eval('#tab-request-price > .card-text > .container-fluid > div > .alert', elem => elem.innerText);
         expect(alert).toMatch(' Transaction added.');
         await page.waitForTimeout(1500);
+
+        await page.waitForSelector('#btn-logout')
+        await page.click('#btn-logout')
+        
+        await page.waitForSelector('#btn-save-logout')
+        await page.click('#btn-save-logout')
     }, 100000);
 
     it('Should create request for Price Per Location', async() => {
@@ -234,8 +246,8 @@ describe('Validation for creating request for price approval', () => {
         await page.waitForTimeout(1500);
         
         //Select Company
-        await page.waitForSelector('#select_company');
-        await page.select('#select_company', company);
+        await page.waitForSelector('.select_company');
+        await page.select('.select_company', company);
         await page.waitForTimeout(1500);
 
         //Select Price By
@@ -288,6 +300,12 @@ describe('Validation for creating request for price approval', () => {
         const alert = await page.$eval('#tab-request-price > .card-text > .container-fluid > div > .alert', elem => elem.innerText);
         expect(alert).toMatch(' Transaction added.');
         await page.waitForTimeout(1500);
+
+        await page.waitForSelector('#btn-logout')
+        await page.click('#btn-logout')
+        
+        await page.waitForSelector('#btn-save-logout')
+        await page.click('#btn-save-logout')
     }, 100000);
 }, 500000);
 describe('Validation for cancelling pending request for price approval', () => {
@@ -329,6 +347,12 @@ describe('Validation for cancelling pending request for price approval', () => {
         expect(alert).toMatch('Transaction cancelled');
         expect(status).toMatch('Cancelled');
         await page.waitForTimeout(1500);
+
+        await page.waitForSelector('#btn-logout')
+        await page.click('#btn-logout')
+        
+        await page.waitForSelector('#btn-save-logout')
+        await page.click('#btn-save-logout')
     }, 100000);
 },500000);
 
@@ -358,7 +382,7 @@ describe('Validation for approving Price Approval request', () => {
         await page.waitForSelector('#tab-approval-list___BV_tab_button__');
         await page.click('#tab-approval-list___BV_tab_button__');
         await page.waitForTimeout(1500);
-        
+        await page.waitForSelector('.table > #item_approval_table > tbody > tr:nth-child(1) > td:nth-child(1)', {hidden:false})
         //Click Approve button
         await page.waitForSelector('tr > td > #btn_approve_req');
         await page.click('tr > td > #btn_approve_req');

@@ -3,8 +3,8 @@ const config = {
       reporters: [
           "default",
           ["jest-html-reporters", {
-            "publicPath": "C:/Users/BFI/Desktop/Myles Limson/Test Results/Indirect License - Custom Apps/MDM",
-            "filename": "MDM-Customer-Indirect-License.html",
+            "publicPath": "C:/Users/BFI/Desktop/Myles Limson/Test Results/MDM - notif bugfix",
+            "filename": "MDM-PriceApproval-Error Notif Testing.html",
             "openReport": true
           }]
         ]
