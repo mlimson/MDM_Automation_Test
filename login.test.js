@@ -59,10 +59,16 @@ describe('Log-in Module', () => {
         await page.type(IdField , invalidId, {delay: 50}); //input invalid username
         await page.type(PasswordField, invalidPassword, {delay: 50}); //input invalid password
         await page.click(LoginBtn); //click login button
+        const finalResponse = await page.waitForResponse(response => 
+            response.url() === 'https://mdm-ptr.biotechfarms.net/mdm-api/login'
+            && (response.request().method() === 'PATCH' 
+            || response.request().method() === 'POST'), 11);
+          let responseJson = await finalResponse.json();
+          console.log(responseJson);
         await page.waitForTimeout(2500);
         await page.$$('div > .card > .card-body > div > .alert');
         const alert = await page.$eval('div > .card > .card-body > div > .alert', elem => elem.innerText); //error message
-        expect(alert).toMatch('User does not exist'); //validate expected result
+        expect(responseJson.errorMsg).toMatch('User does not exist'); //validate expected result
     }, 100000);//end of TC_LG_001
 
     //start of TC_LG_002
