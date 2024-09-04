@@ -373,7 +373,7 @@ describe('Validation for purchasing staff can update request created for suplier
         //Upload attachments
         await page.waitForTimeout(2000);
         const attachment = await page.$$('.custom-file-input');
-        await attachment[0].uploadFile('C:\\Users\\BFI\\Pictures\\download.png');
+        await attachment[0].uploadFile('C:\\Users\\BFI ITG\\Pictures\\download.png');
         await page.waitForTimeout(2000);
         //---------Expected Result---------
         let attchField = await page.$eval('.custom-file-label', elem => elem.innerText);
@@ -625,14 +625,20 @@ describe('Validation for error if the supplier name was already requested', () =
         await page.waitForSelector('#btn_save_submit-create');
         await page.click('#btn_save_submit-create');
 
+        const finalResponse = await page.waitForResponse(response => 
+            response.url() === 'https://mdm-ptr.biotechfarms.net/mdm-api/bp_requests/create'
+            && (response.request().method() === 'PATCH' 
+            || response.request().method() === 'POST'), 11);
+          let responseJson = await finalResponse.json();
+          console.log(responseJson);
+
         //wait for loading to stop
         await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden: true})
 
         //---------Expected Result---------
         await page.waitForSelector('#alert-supplier');
         const alert = await page.$eval('#alert-supplier', elem => elem.innerText);
-        expect(alert).toMatch(/BP already exist with request no: /);
-
+        expect(responseJson.errorMsg).toMatch(/BP already exist with request no: /);
     }, 100000);//end of TC_SPLR_027
 }, 500000),
 
@@ -792,14 +798,19 @@ describe('Validation for error if the supplier name is already existing in SAP',
         await page.waitForTimeout(2000);
         await page.waitForSelector('#btn_save_submit-create');
         await page.click('#btn_save_submit-create');
-
+        const finalResponse = await page.waitForResponse(response => 
+            response.url() === 'https://mdm-ptr.biotechfarms.net/mdm-api/bp_requests/create'
+            && (response.request().method() === 'PATCH' 
+            || response.request().method() === 'POST'), 11);
+          let responseJson = await finalResponse.json();
+          console.log(responseJson);
         //wait for loading to stop
         await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden: true})
 
         //---------Expected Result---------
         await page.waitForSelector('#alert-supplier');
         const alert = await page.$eval('#alert-supplier', elem => elem.innerText);
-        expect(alert).toMatch(/already exists/);
+        expect(responseJson.errorMsg).toMatch(/already exists/);
 
     }, 100000);//end of TC_SPLR_027
 }, 500000),
@@ -1185,12 +1196,19 @@ describe('Validation for error if the supplier name is existing in SAP', () => {
         await page.waitForSelector('#btn_save_submit-create');
         await page.click('#btn_save_submit-create');
 
+        const finalResponse = await page.waitForResponse(response => 
+            response.url() === 'https://mdm-ptr.biotechfarms.net/mdm-api/bp_requests/create'
+            && (response.request().method() === 'PATCH' 
+            || response.request().method() === 'POST'), 11);
+          let responseJson = await finalResponse.json();
+          console.log(responseJson);
+          
         //wait for loading to stop
         await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden: true})
 
         //---------Expected Result---------
         await page.waitForSelector('#alert-supplier');
         const alert = await page.$eval('#alert-supplier', elem => elem.innerText);
-        expect(alert).toMatch("'KCC PROPERTY HOLDINGS, INC.' already exists.");
+        expect(responseJson.errorMsg).toMatch("'KCC PROPERTY HOLDINGS, INC.' already exists.");
     }, 100000);//end of TC_SPLR_027
 }, 500000)

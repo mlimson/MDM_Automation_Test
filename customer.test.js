@@ -548,6 +548,12 @@ describe('Validation for error if customer name was already requested', () => {
         //Click Yes button
         await page.waitForSelector('#btn_save_submit-create');
         await page.click('#btn_save_submit-create');
+        const finalResponse = await page.waitForResponse(response => 
+            response.url() === 'https://mdm-ptr.biotechfarms.net/mdm-api/bp_requests/create'
+            && (response.request().method() === 'PATCH' 
+            || response.request().method() === 'POST'), 11);
+          let responseJson = await finalResponse.json();
+          console.log(responseJson);
         await page.waitForTimeout(2500);
         //wait for loading to stop
         await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden: true})
@@ -555,13 +561,13 @@ describe('Validation for error if customer name was already requested', () => {
         //---------Expected Result---------
         await page.waitForSelector('#alert-requestCust');
         const alert = await page.$eval('#alert-requestCust', elem => elem.innerText);
-        expect(alert).toMatch(/BP already exist with request no: /);
+        expect(responseJson.errorMsg).toMatch(/BP already exist with request no: /);
     }, 100000);//end of TC_CSTMR_024
 }, 500000),
 
 describe('Validation for error if customer name is already existing in SAP', () => {
     //start of TC_CSTMR_024
-    it('Should not allow request for already requested customer name', async () => {
+    it('Should not allow request for already existing in SAP', async () => {
         page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.goto(pageURL, {waitUntil: 'networkidle0'});
@@ -717,6 +723,12 @@ describe('Validation for error if customer name is already existing in SAP', () 
         //Click Yes button
         await page.waitForSelector('#btn_save_submit-create');
         await page.click('#btn_save_submit-create');
+        const finalResponse = await page.waitForResponse(response => 
+            response.url() === 'https://mdm-ptr.biotechfarms.net/mdm-api/bp_requests/create'
+            && (response.request().method() === 'PATCH' 
+            || response.request().method() === 'POST'), 11);
+          let responseJson = await finalResponse.json();
+          console.log(responseJson);
         await page.waitForTimeout(2500);
         //wait for loading to stop
         await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden: true})
@@ -724,7 +736,7 @@ describe('Validation for error if customer name is already existing in SAP', () 
         //---------Expected Result---------
         await page.waitForSelector('#alert-requestCust');
         const alert = await page.$eval('#alert-requestCust', elem => elem.innerText);
-        expect(alert).toMatch(/already exist/);
+        expect(responseJson.errorMsg).toMatch(/already exist/);
     }, 100000);//end of TC_CSTMR_024
 }, 500000),
 
@@ -1045,6 +1057,12 @@ describe('Validation for error if customer name already exists in SAP', () => {
         //Click Yes button
         await page.waitForSelector('#btn_save_submit-create');
         await page.click('#btn_save_submit-create');
+        const finalResponse = await page.waitForResponse(response => 
+            response.url() === 'https://mdm-ptr.biotechfarms.net/mdm-api/bp_requests/create'
+            && (response.request().method() === 'PATCH' 
+            || response.request().method() === 'POST'), 11);
+          let responseJson = await finalResponse.json();
+          console.log(responseJson);
         await page.waitForTimeout(2500);
         //wait for loading to stop
         await page.waitForSelector('.container-fluid > .container-fluid > #loader > .loader3 > .logoz', {hidden: true})
@@ -1052,6 +1070,6 @@ describe('Validation for error if customer name already exists in SAP', () => {
         //---------Expected Result---------
         await page.waitForSelector('#alert-requestCust');
         const alert = await page.$eval('#alert-requestCust', elem => elem.innerText);
-        expect(alert).toMatch("'KCC PROPERTY HOLDINGS, INC.' already exists.");
+        expect(responseJson.errorMsg).toMatch(/ already exists/);
     }, 100000);//end of TC_CSTMR_024
 }, 500000)
